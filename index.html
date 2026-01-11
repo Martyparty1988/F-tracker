@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Finance PWA</title>
+    <title>Pracovní Finance</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#f2f2f7">
@@ -12,9 +12,9 @@
         :root {
             --ios-gray-bg: #f2f2f7;
             --ios-white: #ffffff;
-            --ios-blue: #007aff;
-            --ios-green: #34c759;
-            --ios-red: #ff3b30;
+            --ios-blue: #007aff;    /* Náklady (Refundace) */
+            --ios-green: #34c759;   /* Přijaté zálohy */
+            --ios-orange: #ff9500;  /* Odpracováno */
             --ios-gray-text: #8e8e93;
             --ios-separator: #c6c6c8;
             --ios-radius: 12px;
@@ -43,7 +43,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding-top: calc(var(--safe-top) + 20px);
-            padding-bottom: calc(80px + var(--safe-bottom)); /* Space for tabbar */
+            padding-bottom: calc(80px + var(--safe-bottom));
             padding-left: 16px;
             padding-right: 16px;
         }
@@ -53,7 +53,7 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- COMPONENTS --- */
+        /* --- TYPOGRAPHY & CARDS --- */
         h1 { font-size: 34px; font-weight: 700; margin: 0 0 20px 0; letter-spacing: -0.5px; }
         h2 { font-size: 20px; font-weight: 600; margin: 24px 0 10px 0; color: #1c1c1e; }
         
@@ -65,22 +65,21 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
-        .row { display: flex; justify-content: space-between; align-items: center; }
-        .col { display: flex; flex-direction: column; }
-        
-        /* Balance Card */
+        /* --- DASHBOARD STATS --- */
         .balance-card { text-align: center; padding: 24px 16px; }
         .balance-label { font-size: 13px; color: var(--ios-gray-text); text-transform: uppercase; letter-spacing: 0.5px; }
-        .balance-amount { font-size: 40px; font-weight: 700; margin: 8px 0; letter-spacing: -1px; }
+        .balance-amount { font-size: 44px; font-weight: 700; margin: 8px 0; letter-spacing: -1px; }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
         .stat-item { background: rgba(0,0,0,0.03); padding: 10px; border-radius: 8px; text-align: center; }
-        .stat-val { display: block; font-weight: 600; font-size: 15px; }
-        .stat-lbl { font-size: 11px; color: var(--ios-gray-text); }
+        .stat-val { display: block; font-weight: 600; font-size: 14px; }
+        .stat-lbl { font-size: 10px; color: var(--ios-gray-text); margin-top: 2px; line-height: 1.2; }
+        
         .text-green { color: var(--ios-green); }
-        .text-red { color: var(--ios-red); }
+        .text-blue { color: var(--ios-blue); }
+        .text-orange { color: var(--ios-orange); }
 
-        /* List Items */
+        /* --- LIST ITEMS --- */
         .list-group { background: var(--ios-white); border-radius: var(--ios-radius); overflow: hidden; }
         .list-item {
             display: flex; align-items: center;
@@ -97,8 +96,14 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 20px; margin-right: 12px; flex-shrink: 0;
         }
+        /* Logika barev:
+           Orange = Práce (přičítá se k dluhu)
+           Blue = Náklad (přičítá se k dluhu)
+           Green = Příjem/Záloha (odečítá se z dluhu)
+        */
+        .icon-payout { background: rgba(255, 149, 0, 0.15); color: var(--ios-orange); } 
+        .icon-expense { background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); }
         .icon-income { background: rgba(52, 199, 89, 0.15); color: var(--ios-green); }
-        .icon-expense { background: rgba(255, 59, 48, 0.15); color: var(--ios-red); }
         
         .item-content { flex: 1; min-width: 0; }
         .item-title { font-weight: 600; font-size: 16px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -110,13 +115,13 @@
             background: #e5e5ea; color: #8e8e93; margin-left: 6px; vertical-align: middle;
         }
 
-        /* FAB */
+        /* --- FAB --- */
         .fab {
             position: fixed; bottom: calc(90px + var(--safe-bottom)); right: 20px;
             width: 56px; height: 56px; border-radius: 28px;
-            background: var(--ios-blue); color: white;
+            background: #000; color: white;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,122,255,0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             font-size: 28px; cursor: pointer; z-index: 100;
         }
 
@@ -135,7 +140,7 @@
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: #999; font-size: 10px; padding-top: 8px; cursor: pointer;
         }
-        .tab-btn.active { color: var(--ios-blue); }
+        .tab-btn.active { color: #000; font-weight: 600; }
         .tab-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
 
         /* --- MODAL --- */
@@ -169,7 +174,7 @@
             padding: 12px 16px; border-bottom: 0.5px solid var(--ios-separator);
         }
         .input-row:last-child { border-bottom: none; }
-        .input-label { width: 100px; font-size: 16px; }
+        .input-label { width: 110px; font-size: 16px; }
         .input-field {
             flex: 1; border: none; font-size: 16px; background: transparent; 
             text-align: right; color: #000; outline: none; font-family: inherit;
@@ -178,7 +183,8 @@
             display: flex; background: #e5e5ea; padding: 2px; border-radius: 8px; width: 100%; margin-bottom: 10px;
         }
         .segment-btn {
-            flex: 1; text-align: center; padding: 6px; font-size: 14px; border-radius: 6px; cursor: pointer;
+            flex: 1; text-align: center; padding: 6px; font-size: 13px; border-radius: 6px; cursor: pointer;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .segment-btn.active { background: white; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
@@ -196,9 +202,8 @@
         .filter-chip {
             padding: 6px 12px; background: #e5e5ea; border-radius: 16px; font-size: 14px; white-space: nowrap; cursor: pointer;
         }
-        .filter-chip.active { background: var(--ios-blue); color: white; }
-
-        /* Empty State */
+        .filter-chip.active { background: #000; color: white; }
+        
         .empty-state { text-align: center; color: var(--ios-gray-text); margin-top: 50px; }
     </style>
 </head>
@@ -212,30 +217,28 @@
             <h1>Přehled</h1>
             
             <div class="card balance-card">
-                <div class="balance-label">Aktuální zůstatek</div>
+                <div class="balance-label">Mám ještě dostat (K úhradě)</div>
                 <div class="balance-amount" id="dash-balance">0,00 €</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <span class="stat-val text-green" id="dash-inc">0 €</span>
-                        <span class="stat-lbl">Příjmy</span>
+                        <span class="stat-val text-orange" id="dash-earned">0 €</span>
+                        <span class="stat-lbl">Odpracováno<br>(Výdělek)</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-val text-red" id="dash-exp">0 €</span>
-                        <span class="stat-lbl">Výdaje</span>
+                        <span class="stat-val text-blue" id="dash-expense">0 €</span>
+                        <span class="stat-lbl">Náklady<br>(Nafta, Nákup)</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-val" id="dash-net">0 €</span>
-                        <span class="stat-lbl">Čisté (Měsíc)</span>
+                        <span class="stat-val text-green" id="dash-income">0 €</span>
+                        <span class="stat-lbl">Vyplaceno<br>(Zálohy)</span>
                     </div>
                 </div>
             </div>
 
             <h2>Poslední záznamy</h2>
-            <div class="list-group" id="dash-list">
-                <!-- Items here -->
-            </div>
-            <div class="empty-state" id="dash-empty" style="display:none;">Žádné záznamy</div>
+            <div class="list-group" id="dash-list"></div>
+            <div class="empty-state" id="dash-empty" style="display:none;">Zatím žádné záznamy</div>
         </div>
 
         <!-- RECORDS (LIST) -->
@@ -249,14 +252,12 @@
 
             <div class="filter-bar">
                 <div class="filter-chip active" data-filter="all">Vše</div>
-                <div class="filter-chip" data-filter="income">Příjmy</div>
-                <div class="filter-chip" data-filter="expense">Výdaje</div>
-                <div class="filter-chip" data-filter="payout">Výplata</div>
+                <div class="filter-chip" data-filter="payout">Práce</div>
+                <div class="filter-chip" data-filter="expense">Náklady</div>
+                <div class="filter-chip" data-filter="income">Zálohy</div>
             </div>
 
-            <div class="list-group" id="records-list">
-                <!-- Items here -->
-            </div>
+            <div class="list-group" id="records-list"></div>
         </div>
 
         <!-- STATS -->
@@ -265,11 +266,21 @@
             <p style="color:var(--ios-gray-text); font-size:14px; margin-bottom: 20px;">Tento měsíc</p>
             
             <div class="card">
+                <h3>Složení nároku (Práce + Náklady)</h3>
                 <div id="stats-bars"></div>
             </div>
 
-            <h2>Top Zdroje</h2>
-            <div class="card" id="stats-sources"></div>
+            <div class="card">
+                <h3>Bilance měsíce</h3>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span>Celkem nárok:</span>
+                    <strong id="stat-total-claim">0 €</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span>Již vyplaceno:</span>
+                    <strong class="text-green" id="stat-total-paid">0 €</strong>
+                </div>
+            </div>
         </div>
 
         <!-- SETTINGS -->
@@ -288,7 +299,7 @@
                 </div>
             </div>
             <p style="text-align:center; color: #999; font-size: 12px; margin-top: 30px;">
-                Verze 1.0 (Offline PWA)<br>Uloženo v prohlížeči
+                Verze 1.2 (Práce & Náklady)<br>Offline PWA
             </p>
         </div>
 
@@ -328,9 +339,9 @@
             
             <div style="padding: 20px 16px 0 16px;">
                 <div class="segment-control" id="type-segment">
-                    <div class="segment-btn active" onclick="modal.setType('income')" data-val="income">Příjem</div>
-                    <div class="segment-btn" onclick="modal.setType('expense')" data-val="expense">Výdaj</div>
-                    <div class="segment-btn" onclick="modal.setType('payout')" data-val="payout">Výplata</div>
+                    <div class="segment-btn active" onclick="modal.setType('payout')" data-val="payout">Práce</div>
+                    <div class="segment-btn" onclick="modal.setType('expense')" data-val="expense">Náklad</div>
+                    <div class="segment-btn" onclick="modal.setType('income')" data-val="income">Záloha</div>
                 </div>
             </div>
 
@@ -349,18 +360,18 @@
             <div class="form-section">
                 <div class="input-row">
                     <label class="input-label">Kategorie</label>
-                    <input type="text" id="inp-cat" class="input-field" placeholder="Např. Jídlo" list="cat-suggestions">
+                    <input type="text" id="inp-cat" class="input-field" placeholder="Např. Nafta" list="cat-suggestions">
                     <datalist id="cat-suggestions">
-                        <option value="Jídlo">
+                        <option value="Nafta">
+                        <option value="Materiál">
                         <option value="Výplata">
-                        <option value="Auto">
-                        <option value="Nákupy">
-                        <option value="Bydlení">
+                        <option value="Svačina">
+                        <option value="Nářadí">
                     </datalist>
                 </div>
                 <div class="input-row">
-                    <label class="input-label">Zdroj/Kdo</label>
-                    <input type="text" id="inp-source" class="input-field" placeholder="Např. Honza">
+                    <label class="input-label">Poznámka</label>
+                    <input type="text" id="inp-note" class="input-field" placeholder="Upřesnění">
                 </div>
                 <div class="input-row">
                     <label class="input-label">Forma</label>
@@ -372,10 +383,6 @@
             </div>
 
             <div class="form-section">
-                <div class="input-row">
-                    <label class="input-label">Poznámka</label>
-                    <input type="text" id="inp-note" class="input-field" placeholder="Volitelné">
-                </div>
                 <div class="input-row" style="justify-content: space-between;">
                     <label class="input-label">Hotovo</label>
                     <input type="checkbox" id="inp-done" style="transform: scale(1.5);">
@@ -397,7 +404,7 @@
         
         // --- DB LAYER (IndexedDB) ---
         const DB = {
-            dbName: 'FinanceAppDB',
+            dbName: 'WorkFinanceDB',
             version: 1,
             db: null,
 
@@ -425,7 +432,7 @@
                     const store = tx.objectStore('records');
                     const req = store.getAll();
                     req.onsuccess = () => resolve(req.result);
-                    req.onerror = () => resolve([]); // Fallback
+                    req.onerror = () => resolve([]); 
                 });
             },
 
@@ -499,7 +506,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `finance_backup_${todayStr()}.json`;
+                a.download = `finance_work_${todayStr()}.json`;
                 a.click();
             },
 
@@ -507,10 +514,6 @@
                 try {
                     const imported = JSON.parse(jsonString);
                     if (!Array.isArray(imported)) throw new Error("Neplatný formát");
-                    
-                    // Basic validation
-                    if(imported.length > 0 && !imported[0].type) throw new Error("Neplatná data");
-
                     await DB.clear();
                     for (const rec of imported) {
                         await DB.save(rec);
@@ -523,7 +526,7 @@
             },
 
             async resetData() {
-                if(confirm('Opravdu smazat všechna data? Tuto akci nelze vzít zpět.')) {
+                if(confirm('Opravdu smazat všechna data?')) {
                     await DB.clear();
                     await this.loadData();
                 }
@@ -533,25 +536,31 @@
         // --- UI CONTROLLER ---
         const ui = {
             renderDashboard() {
-                // Balance calc
-                let balance = 0, inc = 0, exp = 0;
-                const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+                // LOGIKA:
+                // K výplatě (Balance) = (Odpracováno + Náklady) - Přijaté zálohy
+                
+                let earned = 0;   // Práce (payout)
+                let expenses = 0; // Náklady (expense) - přičítají se
+                let paid = 0;     // Zálohy (income) - odečítají se
 
                 this.data.forEach(r => {
                     const val = parseFloat(r.amount);
-                    if (r.type === 'expense') {
-                        balance -= val;
-                        if (r.date.startsWith(currentMonth)) exp += val;
-                    } else {
-                        balance += val;
-                        if (r.date.startsWith(currentMonth)) inc += val;
+                    if (r.type === 'payout') {
+                        earned += val;
+                    } else if (r.type === 'expense') {
+                        expenses += val; // Zde je změna: náklad zvyšuje nárok
+                    } else if (r.type === 'income') {
+                        paid += val;
                     }
                 });
 
-                document.getElementById('dash-balance').textContent = formatMoney(balance);
-                document.getElementById('dash-inc').textContent = formatMoney(inc);
-                document.getElementById('dash-exp').textContent = formatMoney(exp);
-                document.getElementById('dash-net').textContent = formatMoney(inc - exp);
+                const claimTotal = earned + expenses;
+                const balanceDue = claimTotal - paid;
+
+                document.getElementById('dash-balance').textContent = formatMoney(balanceDue);
+                document.getElementById('dash-earned').textContent = formatMoney(earned);
+                document.getElementById('dash-expense').textContent = formatMoney(expenses);
+                document.getElementById('dash-income').textContent = formatMoney(paid);
 
                 // Recent 5
                 const listEl = document.getElementById('dash-list');
@@ -576,7 +585,7 @@
 
                 const filtered = app.data.filter(r => {
                     const matchesType = type === 'all' || r.type === type;
-                    const matchesSearch = (r.note + r.category + r.source).toLowerCase().includes(term);
+                    const matchesSearch = (r.note + r.category).toLowerCase().includes(term);
                     return matchesType && matchesSearch;
                 });
 
@@ -587,33 +596,41 @@
                 const currentMonth = new Date().toISOString().slice(0, 7);
                 const monthData = app.data.filter(r => r.date.startsWith(currentMonth));
                 
-                // Group by Category (Expenses only)
-                const cats = {};
-                const sources = {};
-                let totalExp = 0;
+                // Grouping
+                const claimCats = {};
+                let monthEarned = 0;
+                let monthExp = 0;
+                let monthPaid = 0;
 
                 monthData.forEach(r => {
-                    if (r.type === 'expense') {
-                        const c = r.category || 'Nezařazeno';
-                        cats[c] = (cats[c] || 0) + r.amount;
-                        totalExp += r.amount;
-                    } else {
-                        const s = r.source || 'Neznámý';
-                        sources[s] = (sources[s] || 0) + r.amount;
+                    const val = parseFloat(r.amount);
+                    const cat = r.category || 'Ostatní';
+
+                    if (r.type === 'payout') {
+                        monthEarned += val;
+                        // For stats, we can group payouts by category if user uses them
+                        claimCats[cat] = (claimCats[cat] || 0) + val;
+                    } else if (r.type === 'expense') {
+                        monthExp += val;
+                        claimCats[cat] = (claimCats[cat] || 0) + val;
+                    } else if (r.type === 'income') {
+                        monthPaid += val;
                     }
                 });
+                
+                const totalClaim = monthEarned + monthExp;
 
-                // Render Bars
+                // Render Bars (Composition of Claims)
                 const barsEl = document.getElementById('stats-bars');
                 barsEl.innerHTML = '';
                 
-                if (totalExp === 0) {
-                    barsEl.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Žádné výdaje tento měsíc</div>';
+                if (totalClaim === 0) {
+                    barsEl.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Žádná práce ani náklady tento měsíc</div>';
                 } else {
-                    Object.entries(cats)
+                    Object.entries(claimCats)
                         .sort((a,b) => b[1] - a[1])
                         .forEach(([name, val]) => {
-                            const pct = (val / totalExp) * 100;
+                            const pct = (val / totalClaim) * 100;
                             barsEl.innerHTML += `
                                 <div class="bar-container">
                                     <div class="bar-label"><span>${name}</span><span>${formatMoney(val)}</span></div>
@@ -622,16 +639,9 @@
                         });
                 }
 
-                // Render Sources
-                const srcEl = document.getElementById('stats-sources');
-                srcEl.innerHTML = '';
-                Object.entries(sources).sort((a,b) => b[1] - a[1]).slice(0, 5).forEach(([name, val]) => {
-                    srcEl.innerHTML += `
-                        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:0.5px solid #eee;">
-                            <span>${name}</span>
-                            <b>${formatMoney(val)}</b>
-                        </div>`;
-                });
+                // Render Summary
+                document.getElementById('stat-total-claim').textContent = formatMoney(totalClaim);
+                document.getElementById('stat-total-paid').textContent = formatMoney(monthPaid);
             },
 
             createRow(r) {
@@ -639,21 +649,38 @@
                 el.className = 'list-item';
                 el.onclick = () => modal.edit(r);
                 
-                const isExp = r.type === 'expense';
-                const sign = isExp ? '-' : '+';
-                const colorClass = isExp ? 'text-red' : 'text-green';
-                const iconClass = isExp ? 'icon-expense' : 'icon-income';
-                const iconChar = r.type === 'payout' ? '💰' : (isExp ? '📉' : '📈');
+                let iconClass, colorClass, iconChar, sign;
+
+                if (r.type === 'payout') {
+                    // Práce -> Orange, Plus
+                    iconClass = 'icon-payout';
+                    colorClass = 'text-orange';
+                    iconChar = '🔨'; 
+                    sign = '+';
+                } else if (r.type === 'expense') {
+                    // Náklad -> Blue, Plus (přičítá se k nároku)
+                    iconClass = 'icon-expense';
+                    colorClass = 'text-blue';
+                    iconChar = '⛽';
+                    sign = '+';
+                } else { 
+                    // Záloha -> Green, Mínus (už jsem dostal)
+                    iconClass = 'icon-income';
+                    colorClass = 'text-green';
+                    iconChar = '💰';
+                    sign = '-';
+                }
+
                 const badge = r.isDone ? '✅' : '';
-                const methodBadge = `<span class="badge">${r.method === 'cash' ? 'Cash' : 'Bank'}</span>`;
+                const desc = r.note ? `${r.category} • ${r.note}` : r.category;
 
                 el.innerHTML = `
                     <div class="icon-box ${iconClass}">${iconChar}</div>
                     <div class="item-content">
-                        <div class="item-title">${r.category || r.source || 'Bez názvu'} ${badge}</div>
-                        <div class="item-meta">${r.date} • ${r.note || r.source} ${methodBadge}</div>
+                        <div class="item-title">${desc || 'Bez názvu'} ${badge}</div>
+                        <div class="item-meta">${r.date}</div>
                     </div>
-                    <div class="item-amount ${colorClass}">${sign}${formatMoney(r.amount)}</div>
+                    <div class="item-amount ${colorClass}">${sign} ${formatMoney(r.amount)}</div>
                 `;
                 return el;
             }
@@ -667,7 +694,6 @@
                 
                 document.getElementById('view-' + viewId).classList.add('active');
                 
-                // Find tab index logic simplified
                 const tabs = ['dashboard', 'records', 'stats', 'settings'];
                 const idx = tabs.indexOf(viewId);
                 if(idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
@@ -695,7 +721,6 @@
                 document.getElementById('inp-amount').value = r.amount;
                 document.getElementById('inp-date').value = r.date;
                 document.getElementById('inp-cat').value = r.category || '';
-                document.getElementById('inp-source').value = r.source || '';
                 document.getElementById('inp-note').value = r.note || '';
                 document.getElementById('inp-method').value = r.method;
                 document.getElementById('inp-done').checked = r.isDone;
@@ -719,11 +744,10 @@
                 document.getElementById('inp-amount').value = '';
                 document.getElementById('inp-date').value = todayStr();
                 document.getElementById('inp-cat').value = '';
-                document.getElementById('inp-source').value = '';
                 document.getElementById('inp-note').value = '';
                 document.getElementById('inp-method').value = 'bank';
                 document.getElementById('inp-done').checked = false;
-                this.setType('income');
+                this.setType('payout');
             },
 
             async save() {
@@ -739,7 +763,6 @@
                     currency: 'EUR',
                     date: document.getElementById('inp-date').value,
                     category: document.getElementById('inp-cat').value,
-                    source: document.getElementById('inp-source').value,
                     note: document.getElementById('inp-note').value,
                     method: document.getElementById('inp-method').value,
                     isDone: document.getElementById('inp-done').checked
@@ -755,7 +778,6 @@
         };
 
         // --- EVENT LISTENERS ---
-        // Filter chips
         document.querySelectorAll('.filter-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -765,13 +787,11 @@
             });
         });
 
-        // Search
         document.getElementById('search-input').addEventListener('input', (e) => {
             app.filter.search = e.target.value;
             ui.renderList();
         });
 
-        // Import
         document.getElementById('import-file').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -780,10 +800,10 @@
             reader.readAsText(file);
         });
 
-        // Init App
         window.onload = () => app.init();
 
     </script>
 </body>
 </html>
+
 
